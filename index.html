@@ -3,100 +3,78 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Почему ты красивая</title>
+  <title>Для Ксюши 💖</title>
   <style>
-    /* Простая и чистая стилизация */
-    :root{--bg:#fff6fb;--card:#fff;--accent:#ff4d84;--text:#333}
-    body{font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,var(--bg),#fff);margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;color:var(--text)}
-    .card{background:var(--card);border-radius:16px;padding:24px;max-width:720px;width:94%;box-shadow:0 6px 30px rgba(0,0,0,0.08)}
-    header{display:flex;gap:16px;align-items:center}
-    .photo{width:96px;height:96px;border-radius:12px;flex:0 0 96px;background-size:cover;background-position:center;border:3px solid rgba(255,77,132,0.12)}
-    h1{margin:0;font-size:20px}
-    p.lead{margin:6px 0 12px;color:#666}
-    ul{padding-left:20px}
-    li{margin:8px 0}
-    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-    button{background:var(--accent);border:none;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
-    button.secondary{background:#eee;color:#333}
-    textarea{width:100%;min-height:64px;border-radius:8px;padding:8px;border:1px solid #ddd}
-    footer{margin-top:14px;font-size:13px;color:#888}
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      background: linear-gradient(180deg, #ffe6f2, #fff);
+      overflow: hidden;
+      font-family: 'Comic Sans MS', cursive;
+      color: #ff4d84;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin: 0.2em 0;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    p {
+      font-size: 1.3em;
+      margin: 0.5em 0;
+      animation: fadeIn 3s ease-in-out;
+    }
+
+    .heart {
+      position: fixed;
+      top: -10px;
+      color: #ff4d84;
+      font-size: 24px;
+      animation: fall 6s linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <header>
-      <div id="photo" class="photo" style="background-image:url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=256&q=60')"></div>
-      <div>
-        <h1 id="title">Почему ты такая красивая</h1>
-        <p class="lead">Короткие искренние причины, почему я восхищаюсь тобой.</p>
-      </div>
-    </header>
-
-    <!-- Список комплиментов: сюда можно добавлять <li> элементы -->
-    <ul id="compliments">
-      <li>Твоя улыбка освещает комнату.</li>
-      <li>Ты искренняя и доброжелательная — это редкость.</li>
-      <li>Твой голос успокаивает и вдохновляет.</li>
-      <li>У тебя удивительное чувство юмора.</li>
-    </ul>
-
-    <!-- Простая форма для добавления своего комплимента -->
-    <div style="margin-top:12px">
-      <textarea id="newCompliment" placeholder="Напиши свой комплимент и нажми 'Добавить'"></textarea>
-      <div class="controls">
-        <button id="addBtn">Добавить</button>
-        <button id="surpriseBtn" class="secondary">Сюрприз</button>
-        <button id="copyBtn" class="secondary">Копировать все</button>
-      </div>
-    </div>
-
-    <footer>
-      Подсказка: чтобы персонализировать страницу — замените URL фотографии в атрибуте <code>style="background-image:url(...)"</code> у блока с id="photo" и измените заголовок (id="title").
-    </footer>
-  </div>
+  <h1>Ксюша 💕</h1>
+  <p>Ты самая красивая девушка на свете.</p>
+  <p>Каждый твой взгляд — как солнце, что делает день ярче ☀️</p>
+  <p>Ты — волшебная</p>
 
   <script>
-    // Простой и понятный JavaScript
-    const compliments = document.getElementById('compliments');
-    const addBtn = document.getElementById('addBtn');
-    const surpriseBtn = document.getElementById('surpriseBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const textarea = document.getElementById('newCompliment');
-
-    addBtn.addEventListener('click',()=>{
-      const text = textarea.value.trim();
-      if(!text) return;
-      const li = document.createElement('li');
-      li.textContent = text;
-      compliments.appendChild(li);
-      textarea.value = '';
-    });
-
-    // Кнопка 'Сюрприз' выбирает случайный комплимент и показывает alert
-    surpriseBtn.addEventListener('click',()=>{
-      const items = compliments.querySelectorAll('li');
-      if(items.length===0) return;
-      const idx = Math.floor(Math.random()*items.length);
-      alert(items[idx].textContent);
-    });
-
-    // Копировать все комплименты в буфер обмена
-    copyBtn.addEventListener('click',async ()=>{
-      const all = Array.from(compliments.querySelectorAll('li')).map(li=>"- "+li.textContent).join('\n');
-      try{
-        await navigator.clipboard.writeText(all);
-        copyBtn.textContent = 'Скопировано!';
-        setTimeout(()=>copyBtn.textContent='Копировать все',1200);
-      }catch(e){
-        alert('Не удалось скопировать — скопируй вручную:\n'+all);
-      }
-    });
-
-    // --------- МЕСТА ДЛЯ ПЕРСОНАЛИЗАЦИИ ----------
-    // 1) Замените URL в блоке с id="photo" (в HTML) на фото девушки.
-    // 2) Измените текст заголовка с id="title".
-    // 3) Добавьте/удалите <li> в списке с id="compliments" чтобы настроить текст.
-    // --------------------------------------------
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.textContent = '❤';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.fontSize = 20 + Math.random() * 20 + 'px';
+      heart.style.animationDuration = 4 + Math.random() * 3 + 's';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }
+    setInterval(createHeart, 300);
   </script>
 </body>
 </html>
