@@ -1,138 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Тест совместимости</title>
-<style>
-body { font-family: Arial, sans-serif; background: #f0f4f8; margin:0; padding:0; }
-.container { max-width: 800px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-h1 { text-align: center; margin-bottom: 20px; }
-.question { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 15px; background: #f9f9f9; }
-.options label { display: block; margin: 5px 0; cursor: pointer; }
-button { background: #007bff; color: #fff; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-size: 16px; }
-button:hover { background: #0056b3; }
-.result { margin-top: 30px; padding: 20px; background: #e9f5ff; border-radius: 15px; }
-.bar-container { background: #ddd; border-radius: 8px; height: 12px; margin-top: 5px; overflow: hidden; }
-.bar { height: 12px; background: linear-gradient(90deg, #4ade80, #3b82f6); }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Почему ты красивая</title>
+  <style>
+    /* Простая и чистая стилизация */
+    :root{--bg:#fff6fb;--card:#fff;--accent:#ff4d84;--text:#333}
+    body{font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,var(--bg),#fff);margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;color:var(--text)}
+    .card{background:var(--card);border-radius:16px;padding:24px;max-width:720px;width:94%;box-shadow:0 6px 30px rgba(0,0,0,0.08)}
+    header{display:flex;gap:16px;align-items:center}
+    .photo{width:96px;height:96px;border-radius:12px;flex:0 0 96px;background-size:cover;background-position:center;border:3px solid rgba(255,77,132,0.12)}
+    h1{margin:0;font-size:20px}
+    p.lead{margin:6px 0 12px;color:#666}
+    ul{padding-left:20px}
+    li{margin:8px 0}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    button{background:var(--accent);border:none;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+    button.secondary{background:#eee;color:#333}
+    textarea{width:100%;min-height:64px;border-radius:8px;padding:8px;border:1px solid #ddd}
+    footer{margin-top:14px;font-size:13px;color:#888}
+  </style>
 </head>
 <body>
-<div class="container">
-<h1>Тест совместимости</h1>
-<form id="testForm"></form>
-<div id="result" class="result" style="display:none;"></div>
-</div>
+  <div class="card">
+    <header>
+      <div id="photo" class="photo" style="background-image:url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=256&q=60')"></div>
+      <div>
+        <h1 id="title">Почему ты такая красивая</h1>
+        <p class="lead">Короткие искренние причины, почему я восхищаюсь тобой.</p>
+      </div>
+    </header>
 
-<script>
-// Эталонные ответы (20 шт.)
-const referenceAnswers = [
- "A","A","B","A","C",
- "B","A","B","A","B",
- "C","A","A","B","C",
- "A","B","C","C","A"
-];
+    <!-- Список комплиментов: сюда можно добавлять <li> элементы -->
+    <ul id="compliments">
+      <li>Твоя улыбка освещает комнату.</li>
+      <li>Ты искренняя и доброжелательная — это редкость.</li>
+      <li>Твой голос успокаивает и вдохновляет.</li>
+      <li>У тебя удивительное чувство юмора.</li>
+    </ul>
 
-// Пул вопросов (50 штук, укороченный пример)
-const questionPool = [
- "Мне нравится пробовать новые виды деятельности",
- "Я люблю читать книги или статьи, которые заставляют задуматься",
- "Я легко воспринимаю новые идеи и изменения",
- "Мне интересно изучать другие культуры",
- "Я люблю обсуждать абстрактные темы",
- "Я ценю искусство и творчество",
- "Мне нравится экспериментировать с новыми подходами",
- "Я быстро осваиваю новые навыки",
- "Я предпочитаю разнообразие в жизни",
- "Мне нравится выходить из зоны комфорта",
- "Я обычно довожу начатые дела до конца",
- "Я заранее планирую свои действия",
- "Мне важно соблюдать порядок",
- "Я стараюсь выполнять обещания",
- "Я редко опаздываю",
- "Я предпочитаю действовать по плану",
- "Я умею концентрироваться на задаче",
- "Я редко откладываю дела на потом",
- "Мне нравится систематизировать информацию",
- "Я несу ответственность за свои действия",
- "Мне нравится общаться с новыми людьми",
- "Я чувствую себя уверенно в центре внимания",
- "Я получаю энергию от общения",
- "Мне нравится быть частью команды",
- "Я люблю участвовать в мероприятиях",
- "Я часто делюсь своими эмоциями",
- "Мне нравится активно выражать мысли",
- "Я легко завожу новые знакомства",
- "Я предпочитаю активный отдых",
- "Я люблю командные игры",
- "Я стараюсь помогать другим людям",
- "Я легко иду на компромисс",
- "Мне важно, чтобы окружающие чувствовали себя хорошо",
- "Я умею слушать других",
- "Я стараюсь избегать конфликтов",
- "Я доверяю людям",
- "Я люблю заботиться о близких",
- "Я умею прощать ошибки других",
- "Я стараюсь быть вежливым и тактичным",
- "Я ценю дружеские отношения",
- "Я сохраняю спокойствие в стрессовых ситуациях",
- "Я редко раздражаюсь по пустякам",
- "Я умею контролировать свои эмоции",
- "Я не поддаюсь панике",
- "Я быстро прихожу в норму после неудач",
- "Я не принимаю всё близко к сердцу",
- "Я сохраняю хладнокровие в конфликте",
- "Я не зацикливаюсь на проблемах",
- "Я редко испытываю стресс",
- "Я умею сохранять внутренний баланс"
-];
+    <!-- Простая форма для добавления своего комплимента -->
+    <div style="margin-top:12px">
+      <textarea id="newCompliment" placeholder="Напиши свой комплимент и нажми 'Добавить'"></textarea>
+      <div class="controls">
+        <button id="addBtn">Добавить</button>
+        <button id="surpriseBtn" class="secondary">Сюрприз</button>
+        <button id="copyBtn" class="secondary">Копировать все</button>
+      </div>
+    </div>
 
-// Берём первые 20 вопросов (можно сделать случайный выбор)
-let selectedQuestions = questionPool.slice(0,20);
+    <footer>
+      Подсказка: чтобы персонализировать страницу — замените URL фотографии в атрибуте <code>style="background-image:url(...)"</code> у блока с id="photo" и измените заголовок (id="title").
+    </footer>
+  </div>
 
-const form = document.getElementById('testForm');
-const resultDiv = document.getElementById('result');
+  <script>
+    // Простой и понятный JavaScript
+    const compliments = document.getElementById('compliments');
+    const addBtn = document.getElementById('addBtn');
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const textarea = document.getElementById('newCompliment');
 
-// Отображаем вопросы
-selectedQuestions.forEach((q,i)=>{
-  const div = document.createElement('div');
-  div.className='question';
-  div.innerHTML = `<p>${i+1}. ${q}</p>`;
-  const optionsDiv = document.createElement('div');
-  optionsDiv.className='options';
-  ['A) Согласен','B) Иногда','C) Не согласен'].forEach(opt=>{
-    const label = document.createElement('label');
-    label.innerHTML = `<input type='radio' name='q${i}' value='${opt[0]}' required> ${opt}`;
-    optionsDiv.appendChild(label);
-  });
-  div.appendChild(optionsDiv);
-  form.appendChild(div);
-});
+    addBtn.addEventListener('click',()=>{
+      const text = textarea.value.trim();
+      if(!text) return;
+      const li = document.createElement('li');
+      li.textContent = text;
+      compliments.appendChild(li);
+      textarea.value = '';
+    });
 
-const submitBtn = document.createElement('button');
-submitBtn.textContent='Посчитать совместимость';
-form.appendChild(submitBtn);
+    // Кнопка 'Сюрприз' выбирает случайный комплимент и показывает alert
+    surpriseBtn.addEventListener('click',()=>{
+      const items = compliments.querySelectorAll('li');
+      if(items.length===0) return;
+      const idx = Math.floor(Math.random()*items.length);
+      alert(items[idx].textContent);
+    });
 
-// Проверка результатов
-form.addEventListener('submit',function(e){
-  e.preventDefault();
-  let userAnswers=[];
-  selectedQuestions.forEach((q,i)=>{
-    userAnswers.push(form['q'+i].value);
-  });
+    // Копировать все комплименты в буфер обмена
+    copyBtn.addEventListener('click',async ()=>{
+      const all = Array.from(compliments.querySelectorAll('li')).map(li=>"- "+li.textContent).join('\n');
+      try{
+        await navigator.clipboard.writeText(all);
+        copyBtn.textContent = 'Скопировано!';
+        setTimeout(()=>copyBtn.textContent='Копировать все',1200);
+      }catch(e){
+        alert('Не удалось скопировать — скопируй вручную:\n'+all);
+      }
+    });
 
-  // Подсчёт совпадений
-  let matches=0;
-  for(let i=0;i<referenceAnswers.length;i++){
-    if(userAnswers[i]===referenceAnswers[i]) matches++;
-  }
-  const percent=Math.round((matches/referenceAnswers.length)*100);
-  let verdict=percent>=75?'Подходят ✅':percent>=50?'Спорно ⚠️':'Не подходят ❌';
-
-  resultDiv.style.display='block';
-  resultDiv.innerHTML=`<h2>Совместимость: ${percent}% — ${verdict}</h2>
-  <p>Совпадений: ${matches} из ${referenceAnswers.length}</p>`;
-});
-</script>
+    // --------- МЕСТА ДЛЯ ПЕРСОНАЛИЗАЦИИ ----------
+    // 1) Замените URL в блоке с id="photo" (в HTML) на фото девушки.
+    // 2) Измените текст заголовка с id="title".
+    // 3) Добавьте/удалите <li> в списке с id="compliments" чтобы настроить текст.
+    // --------------------------------------------
+  </script>
 </body>
 </html>
