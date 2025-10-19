@@ -3,37 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Тест совместимости</title>
+<title>Тест совместимости личности</title>
 <style>
-body { font-family: Arial, sans-serif; background: #f0f4f8; margin:0; padding:0; }
-.container { max-width: 800px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-h1 { text-align: center; margin-bottom: 20px; }
-.question { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 15px; background: #f9f9f9; }
+body { font-family: Arial, sans-serif; background: #eef2f7; margin:0; padding:0; }
+.container { max-width: 900px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 6px 25px rgba(0,0,0,0.1); }
+h1 { text-align: center; margin-bottom: 25px; color:#333; }
+.question { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 15px; background: #fafafa; }
 .options label { display: block; margin: 5px 0; cursor: pointer; }
-button { background: #007bff; color: #fff; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-size: 16px; }
+button { background: #007bff; color: #fff; border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; font-size: 16px; }
 button:hover { background: #0056b3; }
-.result { margin-top: 30px; padding: 20px; background: #e9f5ff; border-radius: 15px; }
+.result { margin-top: 30px; padding: 25px; background: #e9f5ff; border-radius: 15px; }
 .bar-container { background: #ddd; border-radius: 8px; height: 12px; margin-top: 5px; overflow: hidden; }
 .bar { height: 12px; background: linear-gradient(90deg, #4ade80, #3b82f6); }
 </style>
 </head>
 <body>
 <div class="container">
-<h1>Тест совместимости</h1>
+<h1>Тест совместимости личности</h1>
 <form id="testForm"></form>
 <div id="result" class="result" style="display:none;"></div>
 </div>
 
 <script>
-// Эталонные ответы (20 шт.)
+// Эталонные ответы (30 шт.)
 const referenceAnswers = [
- "A","A","B","A","C",
- "B","A","B","A","B",
- "C","A","A","B","C",
- "A","B","C","C","A"
+ "A","A","B","A","C","B","A","B","A","B",
+ "C","A","A","B","C","A","B","C","C","A",
+ "B","A","B","A","A","A","A","A","A","A"
 ];
 
-// Пул вопросов (50 штук, укороченный пример)
+// Пул из 50 вопросов
 const questionPool = [
  "Мне нравится пробовать новые виды деятельности",
  "Я люблю читать книги или статьи, которые заставляют задуматься",
@@ -87,8 +86,17 @@ const questionPool = [
  "Я умею сохранять внутренний баланс"
 ];
 
-// Берём первые 20 вопросов (можно сделать случайный выбор)
-let selectedQuestions = questionPool.slice(0,20);
+// Случайный выбор 30 вопросов
+function getRandomQuestions(pool, n){
+  const copy = [...pool];
+  const selected = [];
+  while(selected.length < n && copy.length){
+    const idx = Math.floor(Math.random() * copy.length);
+    selected.push(copy.splice(idx,1)[0]);
+  }
+  return selected;
+}
+const selectedQuestions = getRandomQuestions(questionPool, 30);
 
 const form = document.getElementById('testForm');
 const resultDiv = document.getElementById('result');
@@ -123,15 +131,16 @@ form.addEventListener('submit',function(e){
 
   // Подсчёт совпадений
   let matches=0;
-  for(let i=0;i<referenceAnswers.length;i++){
+  const len=Math.min(userAnswers.length, referenceAnswers.length);
+  for(let i=0;i<len;i++){
     if(userAnswers[i]===referenceAnswers[i]) matches++;
   }
-  const percent=Math.round((matches/referenceAnswers.length)*100);
+  const percent=Math.round((matches/len)*100);
   let verdict=percent>=75?'Подходят ✅':percent>=50?'Спорно ⚠️':'Не подходят ❌';
 
   resultDiv.style.display='block';
   resultDiv.innerHTML=`<h2>Совместимость: ${percent}% — ${verdict}</h2>
-  <p>Совпадений: ${matches} из ${referenceAnswers.length}</p>`;
+  <p>Совпадений: ${matches} из ${len}</p>`;
 });
 </script>
 </body>
